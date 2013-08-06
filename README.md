@@ -2,6 +2,10 @@
 
 TODO: Write a gem description
 
+## Code status
+
+* [![build status](https://secure.travis-ci.org/dice-cyfronet/redirus-worker.png)](https://travis-ci.org/dice-cyfronet/redirus-worker) on travis-ci.org
+
 ## Installation
 
 Add this line to your application's Gemfile:
