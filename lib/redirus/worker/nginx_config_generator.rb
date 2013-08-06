@@ -29,7 +29,7 @@ module Redirus
 
         conf = "location \"/#{proxy_path}/\" {\n"\
         "  proxy_pass http:\/\/#{proxy_pass(proxy_path)}\/;\n"\
-        "#{properties_config}}\n"
+        "#{properties_config(proxy)}}\n"
       end
 
       def proxy_path(proxy)
@@ -55,9 +55,9 @@ module Redirus
         end.join
       end
 
-      def properties_config
+      def properties_config(proxy)
         properties.collect do |prop|
-          "  #{prop};\n"
+          "  #{prop.gsub('{{path}}', proxy[:path])};\n"
         end.join
       end
     end

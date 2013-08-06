@@ -51,16 +51,29 @@ describe Redirus::Worker::NginxConfigGenerator, 'nginx configuration generation'
     end
   end
 
-  context 'with static properties' do
+  describe 'properties' do
     let(:path)   { '/my/path/' }
-    let(:properties) { ['proxy_send_timeout 600', 'my fancy property'] }
     let(:result) { generate([{path: path, workers: single_worker, type: :http}], properties) }
 
-    it 'generates additional proxy conf lines with properties' do
-      expect(result[:http]).to have_property(path, properties[0])
-      expect(result[:http]).to have_property(path, properties[1])
+    context 'which are static' do
+      let(:properties) { ['proxy_send_timeout 600', 'my fancy property'] }
+
+      it 'generates additional proxy conf lines with properties' do
+        expect(result[:http]).to have_property(path, properties[0])
+        expect(result[:http]).to have_property(path, properties[1])
+      end
+    end
+
+    context 'which are dynamic' do
+      let(:properties) { ['proxy_set_header X-Path-Prefix "{{path}}"'] }
+
+      it 'generates additional proxy conf lines with properties' do
+        expect(result[:http]).to have_property(path, 'proxy_set_header X-Path-Prefix "/my/path/"')
+      end
     end
   end
+
+
 
   def generate(proxies, properties)
     Redirus::Worker::NginxConfigGenerator.new(proxies, properties).generate
