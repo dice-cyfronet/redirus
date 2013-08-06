@@ -1,13 +1,13 @@
 RSpec::Matchers.define :conf_be_empty do
   match do |actual|
-    actual[:proxy_conf] == ''
-    actual[:upstream_conf] == ''
+    actual[:proxy] == ''
+    actual[:upstream] == ''
   end
 end
 
 RSpec::Matchers.define :have_config do |path, proxy_pass|
   match do |actual|
-    actual[:proxy_conf] =~ /location "#{excape(path)}" {\n  proxy_pass http:\/\/#{proxy_pass}\/;/
+    actual[:proxy] =~ /location "#{excape(path)}" {\n  proxy_pass http:\/\/#{proxy_pass}\/;/
   end
 
   def excape(path)
@@ -22,7 +22,7 @@ RSpec::Matchers.define :have_upstream_config do |proxy_pass, workers|
         #{workers_config(workers)}
       }
     ENTRY
-    actual[:upstream_conf].gsub(/[\s\n]/, "").include? expected.gsub(/[\s\n]/, "")
+    actual[:upstream].gsub(/[\s\n]/, "").include? expected.gsub(/[\s\n]/, "")
   end
 
   def workers_config(workers)
@@ -35,7 +35,7 @@ end
 RSpec::Matchers.define :have_property do |path, property|
   match do |actual|
 
-    actual[:proxy_conf] =~ /location \"#{excape(path)}\" {(\n.+)*#{excape(property)};/
+    actual[:proxy] =~ /location \"#{excape(path)}\" {(\n.+)*#{excape(property)};/
   end
 
   def excape(path)
