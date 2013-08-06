@@ -10,8 +10,8 @@ module Redirus
 
       def generate
         result = {
-          http:  { proxy_conf: '', upstream_conf: '' },
-          https: { proxy_conf: '', upstream_conf: '' }
+          http:  { proxy_conf: StringIO.new, upstream_conf: StringIO.new },
+          https: { proxy_conf: StringIO.new, upstream_conf: StringIO.new }
         }
 
         proxies.each do |proxy|
@@ -19,10 +19,23 @@ module Redirus
           result[proxy[:type]][:upstream_conf] << generate_upstream_conf(proxy)
         end
 
-        result
+        string_values(result)
       end
 
       private
+
+      def string_values(result)
+        result = {
+          http:  {
+            proxy_conf: result[:http][:proxy_conf].string,
+            upstream_conf: result[:http][:upstream_conf].string
+          },
+          https: {
+            proxy_conf: result[:https][:proxy_conf].string,
+            upstream_conf: result[:https][:upstream_conf].string
+          }
+        }
+      end
 
       def generate_proxy_conf(proxy)
         proxy_path = proxy_path(proxy)
