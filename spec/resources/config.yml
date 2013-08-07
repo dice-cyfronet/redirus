@@ -1,0 +1,11 @@
+queue: configfile-default
+redis_url: configfile-redis://localhost:6379
+namespace: configfile-redirus
+nginx:
+  http:
+    proxy: configfile-http_proxy.conf
+    upstream: configfile-http_upstream.conf
+  https:
+    proxy: configfile-https_proxy.conf
+    upstream: configfile-http_upstream.conf
+  pid: configfile-nginx.pid

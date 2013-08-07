@@ -1,10 +1,12 @@
 require 'rubygems'
 require 'bundler/setup'
 
+require 'redirus/config'
 require 'redirus/worker/proxy'
 require 'redirus/worker/nginx_config_generator'
 
-Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
+SPEC_DIR = File.dirname(__FILE__)
+Dir[SPEC_DIR + "/support/**/*.rb"].each {|f| require f}
 
 if ENV['TRAVIS']
   require 'coveralls'
@@ -16,4 +18,11 @@ RSpec.configure do |config|
     config.expect_with :rspec do |c|
       c.syntax = :expect
     end
+
+    config.alias_example_to :expect_it
+end
+
+RSpec::Core::MemoizedHelpers.module_eval do
+  alias to should
+  alias to_not should_not
 end
