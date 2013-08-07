@@ -1,0 +1,11 @@
+queue: default
+redis_url: redis://localhost:6379
+namespace: redirus
+nginx:
+  http:
+    proxy: http_proxy.conf
+    upstream: http_upstream.conf
+  https:
+    proxy: https_proxy.conf
+    upstream: https_upstream.conf
+  pid: nginx.pid
