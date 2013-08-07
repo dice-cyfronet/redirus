@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'sidekiq'
+
+require_relative '../lib/redirus/worker/proxy'
+require_relative '../lib/redirus/config'
+require_relative '../lib/redirus/worker'
+
+Sidekiq.configure_client do |c|
+  c.redis = { :namespace => Redirus::Worker.config.namespace, :url => Redirus::Worker.config.redis_url, queue: Redirus::Worker.config.queue }
+end
+
+Redirus::Worker::Proxy.perform_async [
+    {path: '/path', workers: ['127.0.0.1:80'], type: :http},
+    {path: '/path', workers: ['127.0.0.1:80'], type: :https},
+  ], ['proxy_set_header X-Path-Prefix "{{path}}"']

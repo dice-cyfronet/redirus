@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'sidekiq'
+
+ROOT_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+RUNNER_PATH = File.join(ROOT_PATH, 'lib', 'redirus', 'runner.rb')
+
+puts "Starting Redirus worker..."
+
+system "sidekiq -r #{RUNNER_PATH}"
