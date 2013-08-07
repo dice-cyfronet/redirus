@@ -1,15 +1,16 @@
 require 'sidekiq'
 
 require_relative 'config'
-require_relative 'proxy'
 
-class Redirus::Worker
-  def self.config
-    @@config ||= Redirus::Config.new @config_path
-  end
+module Redirus
+  module Worker
+    def self.config
+      @@config ||= Redirus::Config.new @config_path
+    end
 
-  def self.config_path
-    @@config_path = config_path
-    @@config = nil
+    def self.config_path
+      @@config_path = config_path
+      @@config = nil
+    end
   end
 end

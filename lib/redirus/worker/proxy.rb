@@ -1,4 +1,5 @@
 require 'sidekiq'
+require_relative 'nginx_config_generator'
 
 module Redirus
   module Worker
@@ -21,7 +22,7 @@ module Redirus
       end
 
       def self.generator
-        @@generator || Redirus::Worker::NginxConfigGenerator
+        @@generator ||= Redirus::Worker::NginxConfigGenerator
       end
 
       # XXX: is it possible to use something like cattr_writer?
@@ -36,6 +37,7 @@ module Redirus
       end
 
       def proxy_config(proxies, properties)
+        # Redirus::Worker::NginxConfigGenerator.new(proxies, properties).generate
         self.class.generator.new(proxies, properties).generate
       end
 

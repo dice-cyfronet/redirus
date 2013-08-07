@@ -16,8 +16,8 @@ describe Redirus::Worker::NginxConfigGenerator, 'nginx configuration generation'
 
   context 'when http proxy' do
     let(:result) { generate([
-        {path: 'path', workers: single_worker, type: :http},
-        {path: '/proxy/with/two/workers', workers: two_workers, type: :http}
+        {'path' => 'path', 'workers' => single_worker, 'type' => 'http'},
+        {'path' => '/proxy/with/two/workers', 'workers' => two_workers, 'type' => 'http'}
       ], []) }
 
     it 'generates empty config for https' do
@@ -39,7 +39,7 @@ describe Redirus::Worker::NginxConfigGenerator, 'nginx configuration generation'
   end
 
   context 'when https proxy' do
-    let(:result) { generate([{path: '/my/path', workers: single_worker, type: :https}], []) }
+    let(:result) { generate([{'path' => '/my/path', 'workers' => single_worker, 'type' => 'https'}], []) }
 
     it 'generates empty config for http' do
       expect(result[:http]).to conf_be_empty
@@ -53,7 +53,7 @@ describe Redirus::Worker::NginxConfigGenerator, 'nginx configuration generation'
 
   describe 'properties' do
     let(:path)   { '/my/path/' }
-    let(:result) { generate([{path: path, workers: single_worker, type: :http}], properties) }
+    let(:result) { generate([{'path' => path, 'workers' => single_worker, 'type' => 'http'}], properties) }
 
     context 'which are static' do
       let(:properties) { ['proxy_send_timeout 600', 'my fancy property'] }

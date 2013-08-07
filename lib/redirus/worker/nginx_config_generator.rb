@@ -15,14 +15,18 @@ module Redirus
         }
 
         proxies.each do |proxy|
-          result[proxy[:type]][:proxy]    << generate_proxy_conf(proxy)
-          result[proxy[:type]][:upstream] << generate_upstream_conf(proxy)
+          result[proxy_type(proxy)][:proxy]    << generate_proxy_conf(proxy)
+          result[proxy_type(proxy)][:upstream] << generate_upstream_conf(proxy)
         end
 
         string_values(result)
       end
 
       private
+
+      def proxy_type(proxy)
+        proxy['type'].to_sym
+      end
 
       def string_values(result)
         result = {
@@ -46,7 +50,7 @@ module Redirus
       end
 
       def proxy_path(proxy)
-        proxy_path = proxy[:path]
+        proxy_path = proxy['path']
         proxy_path = proxy_path[0..-2] if proxy_path[proxy_path.size - 1] == '/'
         proxy_path = proxy_path[1..(proxy_path.size - 1)] if proxy_path[0] == '/'
 
@@ -63,14 +67,14 @@ module Redirus
       end
 
       def workers_conf(proxy)
-        proxy[:workers].collect do |worker|
+        proxy['workers'].collect do |worker|
           "  server #{worker};\n"
         end.join
       end
 
       def properties_config(proxy)
         properties.collect do |prop|
-          "  #{prop.gsub('{{path}}', proxy[:path])};\n"
+          "  #{prop.gsub('{{path}}', proxy['path'])};\n"
         end.join
       end
     end
