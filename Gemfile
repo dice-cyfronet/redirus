@@ -1,4 +1,11 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in redirus-worker.gemspec
-gemspec
+gem 'sidekiq'
+
+group :development, :test do
+  gem 'guard-rspec'
+  gem 'shoulda-matchers'
+  gem 'libnotify'
+
+  gem 'coveralls', require: false
+end
