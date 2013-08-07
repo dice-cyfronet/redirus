@@ -6,6 +6,11 @@ require 'redirus/worker/nginx_config_generator'
 
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 
+if ENV['TRAVIS']
+  require 'coveralls'
+  Coveralls.wear!
+end
+
 RSpec.configure do |config|
     # Disable the old-style object.should syntax.
     config.expect_with :rspec do |c|

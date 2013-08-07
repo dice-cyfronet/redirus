@@ -26,4 +26,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'libnotify'
   spec.add_development_dependency 'shoulda-matchers'
+
+  if ENV['TRAVIS']
+    spec.add_development_dependency 'coveralls'
+  end
 end
