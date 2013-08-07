@@ -3,7 +3,13 @@ require 'sidekiq'
 require_relative 'config'
 require_relative 'proxy'
 
-config = Redirus::Config.new
-Sidekiq.configure_server do |c|
-  c.redis = { :namespace => config.namespace, :url => config.redis_url }
+class Redirus::Worker
+  def self.config
+    @@config ||= Redirus::Config.new @config_path
+  end
+
+  def self.config_path
+    @@config_path = config_path
+    @@config = nil
+  end
 end
