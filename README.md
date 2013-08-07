@@ -1,24 +1,45 @@
 # Redirus worker [![build status](https://secure.travis-ci.org/dice-cyfronet/redirus-worker.png)](https://travis-ci.org/dice-cyfronet/redirus-worker) [![Code Climate](https://codeclimate.com/github/dice-cyfronet/redirus-worker.png)](https://codeclimate.com/github/dice-cyfronet/redirus-worker) [![Dependency Status](https://gemnasium.com/dice-cyfronet/redirus-worker.png)](https://gemnasium.com/dice-cyfronet/redirus-worker) [![Coverage Status](https://coveralls.io/repos/dice-cyfronet/redirus-worker/badge.png?branch=master)](https://coveralls.io/r/dice-cyfronet/redirus-worker)
 
-TODO: Write a gem description
+This is a worker repository. This code will only generate proxy configuration for nginx and letter on restart it.
+
+## Requirements
+
+**Project is designed for Linux operating system.**
+
+- Linux (tested on Ubuntu)
+- Nginx
 
 ## Installation
 
-Add this line to your application's Gemfile:
+```bash
+# Get code
+git@github.com:dice-cyfronet/redirus-worker.git
 
-    gem 'redirus-worker'
+# Enter code dir
+cd redirus-worker
 
-And then execute:
+# Install dependencies
+gem install bundler
+bundler install
 
-    $ bundle
+# Copy configuration
+cp config.yml.example config.yml
 
-Or install it yourself as:
+# Customise redis configuration and nginx config files locations
+edit config.yml
+```
 
-    $ gem install redirus-worker
+## Nginx configuration
 
-## Usage
+```
+TODO
+```
 
-TODO: Write usage instructions here
+## Run
+
+```bash
+bundle exec ./bin/run
+```
 
 ## Contributing
 
