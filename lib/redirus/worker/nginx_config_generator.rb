@@ -45,7 +45,7 @@ module Redirus
         proxy_path = proxy_path(proxy)
 
         conf = "location \"/#{proxy_path}/\" {\n"\
-        "  proxy_pass http:\/\/#{proxy_pass(proxy_path)}\/;\n"\
+        "  proxy_pass http:\/\/#{proxy_pass(proxy)}\/;\n"\
         "#{properties_config(proxy)}}\n"
       end
 
@@ -57,12 +57,12 @@ module Redirus
         proxy_path
       end
 
-      def proxy_pass(proxy_path)
-        proxy_path.gsub('/', '.')
+      def proxy_pass(proxy)
+        "#{proxy['type']}.#{proxy_path(proxy).gsub('/', '.')}"
       end
 
       def generate_upstream_conf(proxy)
-        proxy_pass = proxy_pass proxy_path(proxy)
+        proxy_pass = proxy_pass(proxy)
         "upstream #{proxy_pass} {\n#{workers_conf(proxy)}\}\n"
       end
 

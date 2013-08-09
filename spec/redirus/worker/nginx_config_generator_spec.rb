@@ -25,16 +25,16 @@ describe Redirus::Worker::NginxConfigGenerator, 'nginx configuration generation'
     end
 
     it 'generates http proxy configuration' do
-      expect(result[:http]).to have_config('/path/', 'path')
-      expect(result[:http]).to have_upstream_config('path', single_worker)
+      expect(result[:http]).to have_config('/path/', 'http.path')
+      expect(result[:http]).to have_upstream_config('http.path', single_worker)
     end
 
     it 'generates proxy configuration with complex path' do
-      expect(result[:http]).to have_config('/proxy/with/two/workers/', 'proxy.with.two.workers')
+      expect(result[:http]).to have_config('/proxy/with/two/workers/', 'http.proxy.with.two.workers')
     end
 
     it 'generates http proxy upstream with 2 workers' do
-      expect(result[:http]).to have_upstream_config('proxy.with.two.workers', two_workers)
+      expect(result[:http]).to have_upstream_config('http.proxy.with.two.workers', two_workers)
     end
   end
 
@@ -46,8 +46,8 @@ describe Redirus::Worker::NginxConfigGenerator, 'nginx configuration generation'
     end
 
     it 'generates https proxy configuration' do
-      expect(result[:https]).to have_config('/my/path/', 'my.path')
-      expect(result[:https]).to have_upstream_config('my.path', single_worker)
+      expect(result[:https]).to have_config('/my/path/', 'https.my.path')
+      expect(result[:https]).to have_upstream_config('https.my.path', single_worker)
     end
   end
 
