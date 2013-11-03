@@ -73,7 +73,8 @@ module Redirus
       end
 
       def properties_config(proxy)
-        properties.collect do |prop|
+        local_props = proxy['properties'] || []
+        [local_props, properties].flatten.collect do |prop|
           "  #{prop.gsub('{{path}}', proxy['path'])};\n"
         end.join
       end
