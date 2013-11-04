@@ -13,7 +13,7 @@ This is a worker repository. This code will only generate proxy configuration an
 
 ```bash
 # Get code
-git clone git@github.com:dice-cyfronet/redirus-worker.git
+git clone https://github.com/dice-cyfronet/redirus-worker.git
 
 # Enter code dir
 cd redirus-worker
