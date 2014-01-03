@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Redirus::Worker::Proxy do
-  let(:worker) { Redirus::Worker::Proxy.new }
-
   describe '.generator' do
     context "when overridden" do
       let(:generator) { double("mocked generator") }
@@ -39,8 +37,6 @@ describe Redirus::Worker::Proxy do
     let(:https_upstream_file) { double('https upstream file') }
     let(:nginx_pid_file) { double('https upstream file') }
 
-    let(:worker) { Redirus::Worker::Proxy.new }
-
     let!(:process) { Process.stub(:kill) }
 
     before {
@@ -63,35 +59,35 @@ describe Redirus::Worker::Proxy do
     it 'uses generator to create configuration' do
       expect(generator_class).to receive(:new).with('proxies', 'properties')
       expect(generator).to receive(:generate)
-      worker.perform('proxies', 'properties')
+      subject.perform('proxies', 'properties')
     end
 
     it 'generates http proxy configuration' do
       allow(File).to receive(:open).with('http_proxy_file', 'w').and_yield(http_proxy_file)
       expect(http_proxy_file).to receive(:write).with(generator.generate[:http][:proxy])
 
-      worker.perform('proxies', 'properties')
+      subject.perform('proxies', 'properties')
     end
 
     it 'generates http upstream configuration' do
       allow(File).to receive(:open).with('http_upstream_file', 'w').and_yield(http_upstream_file)
       expect(http_upstream_file).to receive(:write).with(generator.generate[:http][:upstream])
 
-      worker.perform('proxies', 'properties')
+      subject.perform('proxies', 'properties')
     end
 
     it 'generates https proxy configuration' do
       allow(File).to receive(:open).with('https_proxy_file', 'w').and_yield(https_proxy_file)
       expect(https_proxy_file).to receive(:write).with(generator.generate[:https][:proxy])
 
-      worker.perform('proxies', 'properties')
+      subject.perform('proxies', 'properties')
     end
 
     it 'generates https upstream configuration' do
       allow(File).to receive(:open).with('https_upstream_file', 'w').and_yield(https_upstream_file)
       expect(https_upstream_file).to receive(:write).with(generator.generate[:https][:upstream])
 
-      worker.perform('proxies', 'properties')
+      subject.perform('proxies', 'properties')
     end
 
     it 'restarts nginx' do
@@ -100,7 +96,7 @@ describe Redirus::Worker::Proxy do
 
       expect(Process).to receive(:kill).with(:SIGHUP, 123)
 
-      worker.perform('proxies', 'properties')
+      subject.perform('proxies', 'properties')
     end
   end
 end
