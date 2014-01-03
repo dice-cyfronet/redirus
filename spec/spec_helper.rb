@@ -3,7 +3,8 @@ require 'bundler/setup'
 
 require 'redirus/config'
 require 'redirus/worker/proxy'
-require 'redirus/worker/nginx_config_generator'
+require 'redirus/worker/add_proxy'
+require 'redirus/worker/rm_proxy'
 
 SPEC_DIR = File.dirname(__FILE__)
 Dir[SPEC_DIR + "/support/**/*.rb"].each {|f| require f}

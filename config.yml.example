@@ -9,3 +9,4 @@ nginx:
     proxy: https_proxy.conf
     upstream: https_upstream.conf
   pid: nginx.pid
+  configs_path: sites-enabled

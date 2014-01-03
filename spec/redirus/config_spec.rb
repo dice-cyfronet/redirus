@@ -12,11 +12,12 @@ describe Redirus::Config do
     end
 
     it 'returns nginx files location' do
-      expect(config.http_proxy_file).to eq 'http_proxy.conf'
-      expect(config.http_upstream_file).to eq 'http_upstream.conf'
-      expect(config.https_proxy_file).to eq 'https_proxy.conf'
-      expect(config.https_upstream_file).to eq 'http_upstream.conf'
       expect(config.nginx_pid_file).to eq 'nginx.pid'
+      expect(config.configs_path).to eq 'sites-enabled'
+      expect(config.base_server_name).to eq 'localhost'
+      expect(config.http_template).to eq 'listen *:80;'
+      expect(config.https_template).to start_with 'listen *:443 ssl;'
+      expect(config.config_template).to start_with '#{upstream}'
     end
   end
 
@@ -30,11 +31,12 @@ describe Redirus::Config do
     end
 
     it 'returns nginx files location' do
-      expect(config.http_proxy_file).to eq 'configfile-http_proxy.conf'
-      expect(config.http_upstream_file).to eq 'configfile-http_upstream.conf'
-      expect(config.https_proxy_file).to eq 'configfile-https_proxy.conf'
-      expect(config.https_upstream_file).to eq 'configfile-http_upstream.conf'
       expect(config.nginx_pid_file).to eq 'configfile-nginx.pid'
+      expect(config.configs_path).to eq 'configfile-sites-enabled'
+      expect(config.base_server_name).to eq 'configfile-localhost'
+      expect(config.http_template).to eq 'listen *:8000;'
+      expect(config.https_template).to start_with 'listen *:8443 ssl;'
+      expect(config.config_template).to start_with '## configfile'
     end
   end
 end
