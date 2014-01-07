@@ -22,10 +22,6 @@ module Redirus
         type == :https
       end
 
-      def config_file_path(name, type)
-        File.join(config.configs_path, full_name(name, type))
-      end
-
       def upstream_conf(name, workers, type)
         "upstream #{name}_#{type} {\n#{workers_conf(workers)}\}\n"
       end

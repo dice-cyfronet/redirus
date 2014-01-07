@@ -3,7 +3,7 @@ module Redirus
     class RmProxy < Proxy
 
       def perform_action(name, type)
-        File.delete(full_name(name, type))
+        File.delete(config_file_path(name, type))
       end
     end
   end

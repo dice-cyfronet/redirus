@@ -28,6 +28,10 @@ module Redirus
         "#{name}_#{type}"
       end
 
+      def config_file_path(name, type)
+        File.join(config.configs_path, full_name(name, type))
+      end
+
       private
 
       def config
