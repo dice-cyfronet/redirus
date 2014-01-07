@@ -20,56 +20,13 @@ cd redirus-worker
 
 # Install dependencies
 gem install bundler
-bundler install
+bundle install
 
 # Copy configuration
 cp config.yml.example config.yml
 
 # Customise redis configuration and nginx config files locations
 edit config.yml
-```
-
-## Example Nginx configuration
-
-```
-worker_processes  2;
-
-pid /path/to/nginx.pid;
-
-events {
-    worker_connections  1024;
-}
-
-http {
-  # redirus http upstream
-  include /generated/configuration/path/http_upstream.conf;
-  # redirus https upstream
-  include /generated/configuration/path/https_upstream.conf;
-
-  server {
-    listen 80;
-    server_name my.server;
-
-    root html;
-
-    include /generated/configuration/path/http_proxy.conf;
-  }
-
-  server {
-    listen 443 ssl;
-
-    ssl_certificate     /etc/ssl/certs/cert.pem;
-    ssl_certificate_key /etc/ssl/private/key.pem;
-    ssl_protocols       SSLv3 TLSv1 TLSv1.1 TLSv1.2;
-    ssl_ciphers         HIGH:!aNULL:!MD5;
-
-    server_name my.server;
-
-    root html;
-
-    include /generated/configuration/path/https_proxy.conf;
-  }
-}
 ```
 
 ## Example config.yml
@@ -86,12 +43,81 @@ nginx:
     proxy: /generated/configuration/path/https_proxy.conf
     upstream: /generated/configuration/path/https_upstream.conf
   pid: /path/to/nginx.pid
+
+  queue: site_prefix
+  redis_url: redis://localhost:6379
+  namespace: redirus
+  nginx:
+    configs_path: /nginx/sites-enabled
+    pid: /path/to/nginx.pid
+    http_template: 'listen *:8000;'
+    https_template: |
+      listen *:8443 ssl;
+      ssl_certificate     /usr/share/ssl/certs/localhost/host.cert;
+      ssl_certificate_key /usr/share/ssl/certs/localhost/host.key;
+    config_template: |
+      #{upstream}
+      server {
+        #{listen}
+        server_name #{name}.localhost;
+        server_tokens off;
+        location / {
+          proxy_pass http://#{upstream_name};
+          #{properties}
+        }
+      }
+    allowed_properties:
+      - proxy_send_timeout \d
+      - proxy_read_timeout \d
+```
+
+Using `http_template`, `https_template`, `config_template` and `allowed_properties` you can customize how nginx configuration for every subdomain will looks like.
+
+E.g. when redirection with following parameters should be created:
+
+```ruby
+Sidekiq::Client.push(
+  'queue' => 'cyfronet',
+  'class' => Redirus::Worker::AddProxy,
+  'args' => ['subdomain', ['127.0.0.1:80'], :http, ["proxy_send_timeout 6000"]])
+```
+
+than `/nginx/sites-enabled/subdomain_http` file with subdomain nginx configuration is requested:
+
+```
+upstream subdomain_http {
+  server 127.0.0.1:80;
+}
+server {
+  listen *:8000;
+  server_name subdomain.localhost;
+  server_tokens off;
+  location / {
+    proxy_pass http://subdomain_http;
+    proxy_send_timeout 6000;
+  }
+}
 ```
 
 ## Run
 
 ```bash
 bundle exec ./bin/run
+```
+
+## Generating Add/Remove redirection requests
+
+```ruby
+# configure sidekiq client
+Sidekiq.configure_client do |c|
+  c.redis = { :namespace => Redirus::Worker.config.namespace, :url => Redirus::Worker.config.redis_url, queue: Redirus::Worker.config.queue }
+end
+
+# add new redirection
+Sidekiq::Client.push('queue' => 'cyfronet', 'class' => Redirus::Worker::AddProxy, 'args' => ['subdomain', ['127.0.0.1'], :http, ["proxy_send_timeout 6000"]])
+
+# remove redirection
+Sidekiq::Client.push('queue' => 'cyfronet', 'class' => Redirus::Worker::RmProxy, 'args' => ['subdomain', :http])
 ```
 
 ## Contributing
