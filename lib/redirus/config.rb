@@ -64,6 +64,10 @@ server {
 }]
     end
 
+    def allowed_properties
+      nginx_prop :allowed_properties, []
+    end
+
     private
 
     def nginx_prop(type, default=nil)

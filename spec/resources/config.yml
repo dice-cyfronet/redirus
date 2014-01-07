@@ -13,15 +13,15 @@ nginx:
   config_template: |
     ## configfile
     #{upstream}
-    \
     server {
-      #{http}
-      #{https}
-    \
+      #{listen}
       server_name #{name}.#{base_server_name};
       server_tokens off;
-    \
       location / {
-        proxy_pass http://#{name};
+        proxy_pass http://#{upstream_name};
+        #{properties}
       }
     }
+  allowed_properties:
+    - proxy_send_timeout \d
+    - proxy_read_timeout \d

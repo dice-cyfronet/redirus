@@ -18,6 +18,7 @@ describe Redirus::Config do
       expect(config.http_template).to eq 'listen *:80;'
       expect(config.https_template).to start_with 'listen *:443 ssl;'
       expect(config.config_template).to start_with '#{upstream}'
+      expect(config.allowed_properties).to eq []
     end
   end
 
@@ -37,6 +38,7 @@ describe Redirus::Config do
       expect(config.http_template).to eq 'listen *:8000;'
       expect(config.https_template).to start_with 'listen *:8443 ssl;'
       expect(config.config_template).to start_with '## configfile'
+      expect(config.allowed_properties).to eq ['proxy_send_timeout \d', 'proxy_read_timeout \d']
     end
   end
 end
