@@ -1,7 +1,8 @@
+require_relative 'proxy'
+
 module Redirus
   module Worker
     class AddProxy < Proxy
-      include Sidekiq::Worker
 
       def perform_action(name, workers, type, props = nil)
         params = config_propertie(name, workers, type, props)

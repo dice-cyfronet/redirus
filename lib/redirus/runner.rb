@@ -1,7 +1,8 @@
 require 'rubygems'
 require 'sidekiq'
 
-require_relative 'worker/proxy'
+require_relative 'worker/add_proxy'
+require_relative 'worker/rm_proxy'
 require_relative 'worker'
 
 Sidekiq.configure_server do |config|

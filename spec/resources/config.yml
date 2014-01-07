@@ -14,7 +14,7 @@ nginx:
     #{upstream}
     server {
       #{listen}
-      server_name #{name}.#{base_server_name};
+      server_name #{name}.localhost;
       server_tokens off;
       location / {
         proxy_pass http://#{upstream_name};
