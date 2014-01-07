@@ -14,7 +14,6 @@ describe Redirus::Config do
     it 'returns nginx files location' do
       expect(config.nginx_pid_file).to eq 'nginx.pid'
       expect(config.configs_path).to eq 'sites-enabled'
-      expect(config.base_server_name).to eq 'localhost'
       expect(config.http_template).to eq 'listen *:80;'
       expect(config.https_template).to start_with 'listen *:443 ssl;'
       expect(config.config_template).to start_with '#{upstream}'
@@ -34,7 +33,6 @@ describe Redirus::Config do
     it 'returns nginx files location' do
       expect(config.nginx_pid_file).to eq 'configfile-nginx.pid'
       expect(config.configs_path).to eq 'configfile-sites-enabled'
-      expect(config.base_server_name).to eq 'configfile-localhost'
       expect(config.http_template).to eq 'listen *:8000;'
       expect(config.https_template).to start_with 'listen *:8443 ssl;'
       expect(config.config_template).to start_with '## configfile'

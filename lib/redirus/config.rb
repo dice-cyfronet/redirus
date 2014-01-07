@@ -34,10 +34,6 @@ module Redirus
       nginx_prop :configs_path, 'sites-enabled'
     end
 
-    def base_server_name
-      nginx_prop :base_server_name, 'localhost'
-    end
-
     def http_template
       nginx_prop :http_template, 'listen *:80;'
     end

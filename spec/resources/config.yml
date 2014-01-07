@@ -4,7 +4,6 @@ namespace: configfile-redirus
 nginx:
   pid: configfile-nginx.pid
   configs_path: configfile-sites-enabled
-  base_server_name: configfile-localhost
   http_template: 'listen *:8000;'
   https_template: |
     listen *:8443 ssl;
