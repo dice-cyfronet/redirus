@@ -4,13 +4,7 @@ module Redirus
       include Sidekiq::Worker
 
       def perform_action(name, workers, type, props = nil)
-        params = {}
-        params['name'] = name
-        params['listen'] = https?(type)  ? config.https_template : config.http_template
-        params['upstream'] = upstream_conf(name, workers, type)
-        params['upstream_name'] = full_name(name, type)
-        params['properties'] = location_properties(props)
-
+        params = config_propertie(name, workers, type, props)
         File.open(config_file_path(name, type), 'w') do |file|
           param_regexp = '#{\w*}'
           file.write config.config_template.gsub(/#{param_regexp}/) { |p| params[p[2..-2]] }
@@ -18,6 +12,16 @@ module Redirus
       end
 
       private
+
+      def config_propertie(name, workers, type, props)
+        {
+          'name' => name,
+          'listen' => https?(type)  ? config.https_template : config.http_template,
+          'upstream' => upstream_conf(name, workers, type),
+          'upstream_name' => full_name(name, type),
+          'properties' => location_properties(props)
+        }
+      end
 
       def https?(type)
         type == :https
@@ -29,17 +33,6 @@ module Redirus
 
       def workers_conf(workers)
         workers.collect { |worker| "  server #{worker};\n" }.join
-      end
-
-      def config
-        Redirus::Worker.config
-      end
-
-      def restart_nginx
-        File.open(config.nginx_pid_file) do |file|
-          pid = file.read.to_i
-          Process.kill :SIGHUP, pid
-        end
       end
 
       def location_properties(props)

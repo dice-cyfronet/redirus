@@ -32,10 +32,8 @@ module Redirus
         File.join(config.configs_path, full_name(name, type))
       end
 
-      private
-
       def config
-        @config = Redirus::Worker.config
+        @config ||= Redirus::Worker.config
       end
 
       def restart_nginx
