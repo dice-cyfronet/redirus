@@ -17,7 +17,8 @@ describe Redirus::Worker::NginxConfigGenerator, 'nginx configuration generation'
   context 'when http proxy' do
     let(:result) { generate([
         {'path' => 'path', 'workers' => single_worker, 'type' => 'http'},
-        {'path' => '/proxy/with/two/workers', 'workers' => two_workers, 'type' => 'http'}
+        {'path' => '/proxy/with/two/workers', 'workers' => two_workers, 'type' => 'http'},
+        {'path' => 'with space', 'workers' => single_worker, 'type' => 'http'},
       ], []) }
 
     it 'generates empty config for https' do

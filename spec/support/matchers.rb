@@ -7,7 +7,7 @@ end
 
 RSpec::Matchers.define :have_config do |path, proxy_pass|
   match do |actual|
-    actual[:proxy] =~ /location "#{excape(path)}" {\n  proxy_pass http:\/\/#{proxy_pass}\/;/
+    actual[:proxy] =~ /location "#{excape(path)}" {\n  proxy_pass "http:\/\/#{proxy_pass}\/";/
   end
 
   def excape(path)
@@ -18,7 +18,7 @@ end
 RSpec::Matchers.define :have_upstream_config do |proxy_pass, workers|
   match do |actual|
     expected = <<-ENTRY
-      upstream #{proxy_pass} {
+      upstream "#{proxy_pass}" {
         #{workers_config(workers)}
       }
     ENTRY
