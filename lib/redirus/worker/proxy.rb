@@ -45,3 +45,6 @@ module Redirus
     end
   end
 end
+
+require_relative 'add_proxy'
+require_relative 'rm_proxy'
