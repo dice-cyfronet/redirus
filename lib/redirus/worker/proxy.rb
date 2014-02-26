@@ -9,12 +9,15 @@ module Redirus
         begin
           perform_action(*params)
           restart_nginx
-        rescue Errno::EACCES
+        rescue Errno::EACCES => e
           $stderr << "Error: Cannot write to config files - continuing\n"
-        rescue Errno::ENOENT
+          $stderr << "#{e}\n"
+        rescue Errno::ENOENT => e
           $stderr << "Error: Trying to remove non existing config files - continuing\n"
-        rescue Errno::ESRCH
+          $stderr << "#{e}\n"
+        rescue Errno::ESRCH => e
           $stderr << "Warning: Nginx is dead - continuing\n"
+          $stderr << "#{e}\n"
         end
       end
 
