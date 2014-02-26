@@ -25,7 +25,7 @@ module Redirus
       end
 
       def https?(type)
-        type == :https
+        type.to_s == 'https'
       end
 
       def upstream_conf(name, workers, type)
