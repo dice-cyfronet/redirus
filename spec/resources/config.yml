@@ -2,10 +2,25 @@ queue: configfile-default
 redis_url: configfile-redis://localhost:6379
 namespace: configfile-redirus
 nginx:
-  http:
-    proxy: configfile-http_proxy.conf
-    upstream: configfile-http_upstream.conf
-  https:
-    proxy: configfile-https_proxy.conf
-    upstream: configfile-http_upstream.conf
   pid: configfile-nginx.pid
+  configs_path: configfile-sites-enabled
+  http_template: 'listen *:8000;'
+  https_template: |
+    listen *:8443 ssl;
+    ssl_certificate     /usr/share/ssl/certs/localhost/host.cert;
+    ssl_certificate_key /usr/share/ssl/certs/localhost/host.key;
+  config_template: |
+    ## configfile
+    #{upstream}
+    server {
+      #{listen}
+      server_name #{name}.localhost;
+      server_tokens off;
+      location / {
+        proxy_pass http://#{upstream_name};
+        #{properties}
+      }
+    }
+  allowed_properties:
+    - proxy_send_timeout \d
+    - proxy_read_timeout \d

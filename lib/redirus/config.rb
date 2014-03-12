@@ -26,34 +26,45 @@ module Redirus
       @config['namespace'] || 'redirus'
     end
 
-    def http_proxy_file
-      config_file :http, :proxy, 'http_proxy.conf'
-    end
-
-    def http_upstream_file
-      config_file :http, :upstream, 'http_upstream.conf'
-    end
-
-    def https_proxy_file
-      config_file :https, :proxy, 'https_proxy.conf'
-    end
-
-    def https_upstream_file
-      config_file :https, :upstream, 'http_upstream.conf'
-    end
-
     def nginx_pid_file
       nginx_prop :pid, 'nginx.pid'
     end
 
-    private
-
-    def config_file(http_type, type, default)
-      prop = nginx_prop http_type
-      value = prop[type.to_s] if prop
-
-      value || default
+    def configs_path
+      nginx_prop :configs_path, 'sites-enabled'
     end
+
+    def http_template
+      nginx_prop :http_template, 'listen *:80;'
+    end
+
+    def https_template
+      nginx_prop :https_template, %q[listen *:443 ssl;
+ssl_certificate     /usr/share/ssl/certs/localhost/host.cert;
+ssl_certificate_key /usr/share/ssl/certs/localhost/host.key;
+]
+    end
+
+    def config_template
+      nginx_prop :config_template, %q[#{upstream}
+
+server {
+  #{listen}
+
+  server_name #{name}.localhost;
+  server_tokens off;
+
+  location / {
+    proxy_pass http://#{upstream_name};
+  }
+}]
+    end
+
+    def allowed_properties
+      nginx_prop :allowed_properties, []
+    end
+
+    private
 
     def nginx_prop(type, default=nil)
       value = @config['nginx'][type.to_s] if @config['nginx']

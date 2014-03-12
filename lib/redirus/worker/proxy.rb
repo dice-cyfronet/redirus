@@ -1,52 +1,42 @@
 require 'sidekiq'
-require_relative 'nginx_config_generator'
 
 module Redirus
   module Worker
     class Proxy
       include Sidekiq::Worker
 
-      def perform(proxies=[], properties=[])
-        proxy_config = proxy_config(proxies, properties)
-
+      def perform(*params)
         begin
-          update_http  proxy_config
-          update_https proxy_config
+          perform_action(*params)
           restart_nginx
-        rescue Errno::EACCES
-          $stderr << "Error: Cannot write to config files\n"
-          raise
-        rescue Errno::ESRCH
+        rescue Errno::EACCES => e
+          $stderr << "Error: Cannot write to config files - continuing\n"
+          $stderr << "#{e}\n"
+        rescue Errno::ENOENT => e
+          $stderr << "Error: Trying to remove non existing config files - continuing\n"
+          $stderr << "#{e}\n"
+        rescue Errno::ESRCH => e
           $stderr << "Warning: Nginx is dead - continuing\n"
+          $stderr << "#{e}\n"
         end
       end
 
-      def self.generator
-        @@generator ||= Redirus::Worker::NginxConfigGenerator
+      protected
+
+      def perform_action(*params)
+        #by default do nothing
       end
 
-      # XXX: is it possible to use something like cattr_writer?
-      def self.generator=(generator)
-        @@generator = generator
+      def full_name(name, type)
+        "#{name}_#{type}"
       end
 
-      private
+      def config_file_path(name, type)
+        File.join(config.configs_path, full_name(name, type))
+      end
 
       def config
-        @config = Redirus::Worker.config
-      end
-
-      def proxy_config(proxies, properties)
-        # Redirus::Worker::NginxConfigGenerator.new(proxies, properties).generate
-        self.class.generator.new(proxies, properties).generate
-      end
-
-      def update_http(http_proxy_config)
-        write_proxy_config config.http_proxy_file, config.http_upstream_file, http_proxy_config[:http]
-      end
-
-      def update_https(https_proxy_config)
-        write_proxy_config config.https_proxy_file, config.https_upstream_file, https_proxy_config[:https]
+        @config ||= Redirus::Worker.config
       end
 
       def restart_nginx
@@ -55,11 +45,9 @@ module Redirus
           Process.kill :SIGHUP, pid
         end
       end
-
-      def write_proxy_config(proxy_file, upstream_file, config)
-        File.open(proxy_file, 'w') { |file| file.write config[:proxy] }
-        File.open(upstream_file, 'w') { |file| file.write config[:upstream] }
-      end
     end
   end
 end
+
+require_relative 'add_proxy'
+require_relative 'rm_proxy'
