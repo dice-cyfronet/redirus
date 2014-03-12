@@ -1,4 +1,6 @@
-queue: configfile-default
+queues:
+  - first
+  - second
 redis_url: configfile-redis://localhost:6379
 namespace: configfile-redirus
 nginx:

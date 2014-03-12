@@ -14,8 +14,8 @@ module Redirus
       end
     end
 
-    def queue
-      @config['queue'] || 'default'
+    def queues
+      @config['queues'] || ['default']
     end
 
     def redis_url

@@ -5,4 +5,10 @@ require_relative '../lib/redirus/worker'
 
 RUNNER_PATH = File.join(ROOT_PATH, 'lib', 'redirus', 'runner.rb')
 
-system "sidekiq -q #{Redirus::Worker.config.queue} -c 1 -r #{RUNNER_PATH}"
+def queues
+  Redirus::Worker.config.queues.inject('') do |qs, queue|
+    qs << " -q #{queue}"
+  end
+end
+
+system "sidekiq #{queues} -c 1 -r #{RUNNER_PATH}"

@@ -6,7 +6,7 @@ describe Redirus::Config do
     let(:config) { Redirus::Config.new 'nonexisting_config_file' }
 
     it 'returns redis config' do
-      expect(config.queue).to eq 'default'
+      expect(config.queues).to eq ['default']
       expect(config.redis_url).to eq 'redis://localhost:6379'
       expect(config.namespace).to eq 'redirus'
     end
@@ -25,7 +25,7 @@ describe Redirus::Config do
     let(:config) { Redirus::Config.new File.join(SPEC_DIR, 'resources', 'config.yml') }
 
     it 'returns redis config' do
-      expect(config.queue).to eq 'configfile-default'
+      expect(config.queues).to eq ['first', 'second']
       expect(config.redis_url).to eq 'configfile-redis://localhost:6379'
       expect(config.namespace).to eq 'configfile-redirus'
     end
