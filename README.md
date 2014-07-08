@@ -32,43 +32,38 @@ edit config.yml
 ## Example config.yml
 
 ```
-queue: site_prefix
+queues:
+  - site_prefix
+  - second_site_prefix
+
 redis_url: redis://localhost:6379
 namespace: redirus
-nginx:
-  http:
-    proxy: /generated/configuration/path/http_proxy.conf
-    upstream: /generated/configuration/path/http_upstream.conf
-  https:
-    proxy: /generated/configuration/path/https_proxy.conf
-    upstream: /generated/configuration/path/https_upstream.conf
-  pid: /path/to/nginx.pid
 
-  queue: site_prefix
-  redis_url: redis://localhost:6379
-  namespace: redirus
-  nginx:
-    configs_path: /nginx/sites-enabled
-    pid: /path/to/nginx.pid
-    http_template: 'listen *:8000;'
-    https_template: |
-      listen *:8443 ssl;
-      ssl_certificate     /usr/share/ssl/certs/localhost/host.cert;
-      ssl_certificate_key /usr/share/ssl/certs/localhost/host.key;
-    config_template: |
-      #{upstream}
-      server {
-        #{listen}
-        server_name #{name}.localhost;
-        server_tokens off;
-        location / {
-          proxy_pass http://#{upstream_name};
-          #{properties}
-        }
+nginx:
+  configs_path: /path/to/dir/with/nginx/configs/
+  pid: /path/to/nginx.pid
+  http_template: |
+    listen *:80;
+  https_template: |
+    listen *:443 ssl;
+    ssl_certificate     /path/to/cert/dir/server.crt;
+    ssl_certificate_key /path/to/cert/dir/server.key;
+  config_template: |
+    #{upstream}
+    server {
+      #{listen}
+      server_name #{name}.my-domain.pl;
+      server_tokens off;
+      proxy_set_header X-Server-Address $scheme://#{name}.my-domain.pl;
+      proxy_set_header Host $http_host;
+      location / {
+        proxy_pass http://#{upstream_name};
+        #{properties}
       }
-    allowed_properties:
-      - proxy_send_timeout \d
-      - proxy_read_timeout \d
+    }
+  allowed_properties:
+    - proxy_sent_timeout \d
+    - proxy_read_timeout \d
 ```
 
 Using `http_template`, `https_template`, `config_template` and `allowed_properties` you can customize how nginx configuration for every subdomain will looks like.

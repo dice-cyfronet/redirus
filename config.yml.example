@@ -1,12 +1,32 @@
-queue: default
+queues:
+  - site_prefix
+  - second_site_prefix
+
 redis_url: redis://localhost:6379
 namespace: redirus
+
 nginx:
-  http:
-    proxy: http_proxy.conf
-    upstream: http_upstream.conf
-  https:
-    proxy: https_proxy.conf
-    upstream: https_upstream.conf
-  pid: nginx.pid
-  configs_path: sites-enabled
+  configs_path: /path/to/dir/with/nginx/configs/
+  pid: /path/to/nginx.pid
+  http_template: |
+    listen *:80;
+  https_template: |
+    listen *:443 ssl;
+    ssl_certificate     /path/to/cert/dir/server.crt;
+    ssl_certificate_key /path/to/cert/dir/server.key;
+  config_template: |
+    #{upstream}
+    server {
+      #{listen}
+      server_name #{name}.my-domain.pl;
+      server_tokens off;
+      proxy_set_header X-Server-Address $scheme://#{name}.my-domain.pl;
+      proxy_set_header Host $http_host;
+      location / {
+        proxy_pass http://#{upstream_name};
+        #{properties}
+      }
+    }
+  allowed_properties:
+    - proxy_sent_timeout \d
+    - proxy_read_timeout \d
