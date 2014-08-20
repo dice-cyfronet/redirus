@@ -18,7 +18,7 @@ Download and compile nginx:
 mkdir /tmp/nginx && cd /tmp/nginx
 curl http://nginx.org/download/nginx-1.7.4.tar.gz | tar xz
 cd nginx-1.7.4
-./configure --with-http_ssl_module --path=/nginx/installation/path
+./configure --with-http_ssl_module --prefix=/nginx/installation/path
 make
 make install
 ```
