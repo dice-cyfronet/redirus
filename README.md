@@ -101,6 +101,11 @@ http {
     include /path/to/generated/nginx/configurations/*;
 }
 ```
+Two elements from presented configuration need to be customized:
++ `/nginx/installation/path/nginx.pid` file where nginx pid will be written.
++ `/path/to/generated/nginx/configurations/*` path to the place where redirus
+worker will be generating configurations specific to registered redirections. `*`
+is necessary at the end in order to load all configurations from this directory.
 
 If  nginx is to bind to a low-numbered port, e.g. port 80,
 the following command needs to be executed as root:
@@ -140,8 +145,8 @@ redis_url: redis://localhost:6379
 namespace: redirus
 
 nginx:
-  configs_path: /path/to/dir/with/nginx/configs/
-  pid: /path/to/nginx.pid
+  configs_path: /path/to/generated/nginx/configurations/
+  pid: /nginx/installation/path/nginx.pid
   http_template: |
     listen *:80;
   https_template: |
@@ -165,6 +170,16 @@ nginx:
     - proxy_sent_timeout \d
     - proxy_read_timeout \d
 ```
+
+Some elements from presented configuration need to be customized:
++ `/path/to/generated/nginx/configurations/` is the location where configuration
+specific for concrete redirection will be created. Value of this path **need** to
+be the same as in nginx configuration file.
++ `/nginx/installation/path/nginx.pid` is a file containing nginx pid. To this pid
+`SIGHUP` signal will be sent, which will triggers nginx configuration reload.
++ `/path/to/cert/dir/server.crt` path to ssl certificate used in https redirections.
+This certificate need to have `*` in CN field.
++ `/path/to/cert/dir/server.key` path to ssl certificate key file.
 
 By using `http_template`, `https_template`, `config_template` and
 `allowed_properties` you can customize how nginx configuration looks like for each
