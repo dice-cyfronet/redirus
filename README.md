@@ -9,6 +9,7 @@ generating the appropriate nginx configurations and reloading nginx.
 
 - Linux (tested on Ubuntu)
 - Nginx
+- Ruby 2.0+
 
 ## Packages / Dependencies
 
