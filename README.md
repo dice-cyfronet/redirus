@@ -10,6 +10,44 @@ generating the appropriate nginx configurations and reloading nginx.
 - Linux (tested on Ubuntu)
 - Nginx
 
+## Packages / Dependencies
+
+Install the required packages (needed to compile Ruby and nginx):
+
+```
+sudo apt-get update
+
+apt-get install autoconf bison build-essential libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev g++ make libpcre3 libpcre3-dev libssl-dev
+```
+
+## Ruby
+
+You can use ruby installed by ruby version managers such as (RVM)[http://rvm.io/]
+or (rbenv)[https://github.com/sstephenson/rbenv] or install it glabaly from the sources. Bellow global ruby installation will be presented.
+
+Remove the old Ruby 1.8 if present
+
+```
+sudo apt-get remove ruby1.8
+```
+
+Download Ruby and compile it:
+
+```
+mkdir /tmp/ruby && cd /tmp/ruby
+curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz
+cd ruby-2.1.2
+./configure --disable-install-rdoc
+make
+sudo make install
+```
+
+Install the Bundler Gem:
+
+```
+sudo gem install bundler --no-ri --no-rdoc
+```
+
 ## Nginx installation
 
 Download and compile nginx:
