@@ -1,11 +1,11 @@
 # Redirus worker [![build status](https://secure.travis-ci.org/dice-cyfronet/redirus-worker.png)](https://travis-ci.org/dice-cyfronet/redirus-worker) [![Code Climate](https://codeclimate.com/github/dice-cyfronet/redirus-worker.png)](https://codeclimate.com/github/dice-cyfronet/redirus-worker) [![Dependency Status](https://gemnasium.com/dice-cyfronet/redirus-worker.png)](https://gemnasium.com/dice-cyfronet/redirus-worker) [![Coverage Status](https://coveralls.io/repos/dice-cyfronet/redirus-worker/badge.png?branch=master)](https://coveralls.io/r/dice-cyfronet/redirus-worker)
 
-Redirus worker is responsible for consuming create/delete subdomain redirection,
-configuring appropriate nginx configuration and reloading nginx configurations.
+The redirus worker is responsible for consuming create/delete subdomain redirections,
+generating the appropriate nginx configurations and reloading nginx.
 
 ## Requirements
 
-**Project is designed for Linux operating system.**
+**This project is designed for Linux operating systems.**
 
 - Linux (tested on Ubuntu)
 - Nginx
@@ -29,7 +29,7 @@ Update nginx configuration:
 edit /nginx/installation/path/conf/nginx.conf
 ```
 
-the simplest configuration can looks as follow:
+the simplest configuration may look as follows:
 
 ```
 #user  nobody;
@@ -61,8 +61,8 @@ http {
 }
 ```
 
-If the nginx should bind into low-numbered port, e.g. port 80,
-than following command need to be executed as root:
+If  nginx is to bind to a low-numbered port, e.g. port 80,
+the following command needs to be executed as root:
 
 ```
 setcap 'cap_net_bind_service=+ep' /path/to/nginx/sbin/nginx
@@ -125,19 +125,19 @@ nginx:
     - proxy_read_timeout \d
 ```
 
-Using `http_template`, `https_template`, `config_template` and
-`allowed_properties` you can customize how nginx configuration for every
-subdomain will looks like.
+By using `http_template`, `https_template`, `config_template` and
+`allowed_properties` you can customize how nginx configuration looks like for each
+subdomain.
 
-+ `http_template`  is used when http redirection is created
-+ `https_template` is used when https redirection is created
-+ `config_template` is used in both: when creating http and https redirection.
-Inside this template in the `listen` variable section specifif for http or https
-will be injected.
-+ `allowed_properties` section is used to define allowed parameters which can be
-passed used in generated configuration. Regular expressions can be used here.
++ `http_template` is used when an http redirection is created
++ `https_template` is used when an https redirection is created
++ `config_template` is used for http and https redirections.
+Inside this template, the `listen` variable section is specific to http or https
+redirections.
++ `allowed_properties` is used to define allowed parameters which can be
+passed in the generated configuration. Regular expressions can be used here.
 
-E.g. when redirection with following parameters are requested:
+For example - when a redirection with the following parameters is requested:
 
 ```ruby
 Sidekiq::Client.push(
@@ -146,8 +146,8 @@ Sidekiq::Client.push(
   'args' => ['subdomain', ['127.0.0.1:80'], :http, ["proxy_send_timeout 6000"]])
 ```
 
-than `/nginx/sites-enabled/subdomain_http` file with subdomain nginx
-configuration is created:
+...then the following `/nginx/sites-enabled/subdomain_http` subdomain config file
+will be created:
 
 ```
 upstream subdomain_http {
@@ -172,11 +172,10 @@ bundle exec ./bin/run
 ```
 ## Starting using upstart
 
-At the beginning upstart need to be modified in order to allow normal user to use
-upstart:
+The first step is to modify upstart in order to allow normal users to invoke it:
 
-Replace `/etc/dbus-1/system.d/Upstart.conf` with content presented bellow
-to allow any user to invoke all of upstarts methods:
+Replace `/etc/dbus-1/system.d/Upstart.conf` with yr content presented below
+to allow any user to invoke all upstart methods:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -208,7 +207,7 @@ to allow any user to invoke all of upstarts methods:
 </busconfig>
 ```
 
-Add to `${HOME}/.bash_profile` (where `${HOME}` is the home directory of user used to run `upstart`):
+Add the following to `${HOME}/.bash_profile` (where `${HOME}` is the home directory of the user who will run `upstart`):
 
 ```
 if [ ! -f /var/run/user/$(id -u)/upstart/sessions/*.session ]
@@ -222,7 +221,7 @@ then
 fi
 ```
 
-Next upstart configuration files need to be copied:
+Copy upstart configuration files:
 
 ```
 cd redirus-worker-directory
@@ -233,19 +232,19 @@ cp lib/support/upstart/redirus-worker.conf ${HOME}/.init
 cp lib/support/upstart/redirus-worker-1.conf ${HOME}/.init
 cp lib/support/upstart/redirus-worker-nginx.conf ${HOME}/.init
 
-# Change user name, path where redirus worker is installed and where
-# location of nginx configurations directory to be created
+# Specify user name, path under which the redirus worker is installed and
+# the location of the nginx configuration directory to be created:
 editor ${HOME}/.init/redirus.conf
 
-# Similar as above, plus if you are using ruby version manager uncomment and
-# customize appropriate section for rbenv or rvm
+# Similar as above, plus if you are using ruby version manager - uncomment and
+# customize the appropriate section for rbenv or rvm
 editor ${HOME}/.init/redirus-worker-1.conf
 
 # Update path to nginx
 editor ${HOME}/.init/redirus-worker-nginx.conf
 ```
-After loggin off and loggin on you should be able to start/stop/restart redirus
-using following commands:
+After loggin off and back on you should be able to start/stop/restart redirus
+using the following commands:
 
 ```
 initctl start redirus
@@ -270,8 +269,8 @@ Sidekiq::Client.push('queue' => 'cyfronet', 'class' => Redirus::Worker::RmProxy,
 
 ## Contributing
 
-1. Fork it
+1. Fork the project
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+5. Create new pull request
