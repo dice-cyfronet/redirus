@@ -22,8 +22,9 @@ apt-get install autoconf bison build-essential libssl-dev libyaml-dev libreadlin
 
 ## Ruby
 
-You can use ruby installed by ruby version managers such as (RVM)[http://rvm.io/]
-or (rbenv)[https://github.com/sstephenson/rbenv] or install it glabaly from the sources. Bellow global ruby installation will be presented.
+You can use ruby installed by ruby version managers such as [RVM](http://rvm.io/)
+or [rbenv](https://github.com/sstephenson/rbenv), or install it globally from
+sources. The following manual presents global installation.
 
 Remove the old Ruby 1.8 if present
 
