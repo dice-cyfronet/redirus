@@ -10,6 +10,7 @@ generating the appropriate nginx configurations and reloading nginx.
 - Linux (tested on Ubuntu)
 - Nginx
 - Ruby 2.0+
+- Redis (can be installed on separate server)
 
 ## Packages / Dependencies
 
