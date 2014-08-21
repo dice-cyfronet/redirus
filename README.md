@@ -328,16 +328,31 @@ initctl restart redirus
 ## Generating Add/Remove redirection requests
 
 ```ruby
+require 'rubygems'
+require 'redirus/worker'
+require 'redirus/worker/add_proxy'
+require 'redirus/worker/rm_proxy'
+
 # configure sidekiq client
 Sidekiq.configure_client do |c|
-  c.redis = { :namespace => Redirus::Worker.config.namespace, :url => Redirus::Worker.config.redis_url, queue: Redirus::Worker.config.queue }
+  c.redis = {
+    namespace: Redirus::Worker.config.namespace,
+    url: Redirus::Worker.config.redis_url,
+    queue: Redirus::Worker.config.queues.first
+  }
 end
 
 # add new redirection
-Sidekiq::Client.push('queue' => 'cyfronet', 'class' => Redirus::Worker::AddProxy, 'args' => ['subdomain', ['127.0.0.1'], :http, ["proxy_send_timeout 6000"]])
+Sidekiq::Client.push(
+  'queue' => 'cyfronet',
+  'class' => Redirus::Worker::AddProxy,
+  'args' => ['subdomain', ['127.0.0.1'], :http, ["proxy_send_timeout 6000"]])
 
 # remove redirection
-Sidekiq::Client.push('queue' => 'cyfronet', 'class' => Redirus::Worker::RmProxy, 'args' => ['subdomain', :http])
+Sidekiq::Client.push(
+  'queue' => 'cyfronet',
+  'class' => Redirus::Worker::RmProxy,
+  'args' => ['subdomain', :http])
 ```
 
 ## Contributing
