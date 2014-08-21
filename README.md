@@ -344,13 +344,13 @@ end
 
 # add new redirection
 Sidekiq::Client.push(
-  'queue' => 'cyfronet',
+  'queue' => Redirus::Worker.config.queues.first,
   'class' => Redirus::Worker::AddProxy,
   'args' => ['subdomain', ['127.0.0.1'], :http, ["proxy_send_timeout 6000"]])
 
 # remove redirection
 Sidekiq::Client.push(
-  'queue' => 'cyfronet',
+  'queue' => Redirus::Worker.config.queues.first,
   'class' => Redirus::Worker::RmProxy,
   'args' => ['subdomain', :http])
 ```
