@@ -1,0 +1,89 @@
+PATH
+  remote: .
+  specs:
+    redirus-worker (0.0.1)
+      sidekiq
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (4.0.2)
+      i18n (~> 0.6, >= 0.6.4)
+      minitest (~> 4.2)
+      multi_json (~> 1.3)
+      thread_safe (~> 0.1)
+      tzinfo (~> 0.3.37)
+    atomic (1.1.14)
+    celluloid (0.15.2)
+      timers (~> 1.1.0)
+    coderay (1.1.0)
+    connection_pool (1.2.0)
+    diff-lcs (1.2.5)
+    ffi (1.9.3)
+    formatador (0.2.4)
+    guard (2.3.0)
+      formatador (>= 0.2.4)
+      listen (~> 2.1)
+      lumberjack (~> 1.0)
+      pry (>= 0.9.12)
+      thor (>= 0.18.1)
+    guard-rspec (3.0.3)
+      guard (>= 1.8)
+      rspec (~> 2.13)
+    i18n (0.6.9)
+    json (1.8.1)
+    listen (2.4.0)
+      celluloid (>= 0.15.2)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
+    lumberjack (1.0.4)
+    method_source (0.8.2)
+    minitest (4.7.5)
+    multi_json (1.8.2)
+    pry (0.9.12.4)
+      coderay (~> 1.0)
+      method_source (~> 0.8)
+      slop (~> 3.4)
+    rake (10.1.1)
+    rb-fsevent (0.9.4)
+    rb-inotify (0.9.3)
+      ffi (>= 0.5.0)
+    redis (3.0.6)
+    redis-namespace (1.4.1)
+      redis (~> 3.0.4)
+    rspec (2.14.1)
+      rspec-core (~> 2.14.0)
+      rspec-expectations (~> 2.14.0)
+      rspec-mocks (~> 2.14.0)
+    rspec-core (2.14.7)
+    rspec-expectations (2.14.4)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.14.4)
+    rspec-sidekiq (0.5.1)
+      rspec (~> 2.0)
+      sidekiq (>= 2.4.0)
+    shoulda-matchers (2.4.0)
+      activesupport (>= 3.0.0)
+    sidekiq (2.17.2)
+      celluloid (>= 0.15.2)
+      connection_pool (>= 1.0.0)
+      json
+      redis (>= 3.0.6)
+      redis-namespace (>= 1.3.1)
+    slop (3.4.7)
+    thor (0.18.1)
+    thread_safe (0.1.3)
+      atomic
+    timers (1.1.0)
+    tzinfo (0.3.38)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler
+  guard-rspec
+  rake
+  redirus-worker!
+  rspec-sidekiq
+  shoulda-matchers

@@ -141,7 +141,7 @@ cd redirus-worker
 
 # Install dependencies
 gem install bundler
-bundle install
+bundle install --deployment --without development test
 
 # Copy configuration
 cp config.yml.example config.yml
