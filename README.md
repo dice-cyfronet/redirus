@@ -106,6 +106,10 @@ If  nginx is to bind to a low-numbered port, e.g. port 80,
 the following command needs to be executed as root:
 
 ```
+# package required to invoke setcap
+apt-get install libcap2-bin
+
+# allow nginx to bind into low-numbered port
 setcap 'cap_net_bind_service=+ep' /path/to/nginx/sbin/nginx
 ```
 
