@@ -73,11 +73,8 @@ edit /nginx/installation/path/conf/nginx.conf
 the simplest configuration may look as follows:
 
 ```
-#user  nobody;
 worker_processes  1;
 
-
-#pid        logs/nginx.pid;
 pid /nginx/installation/path/nginx.pid;
 
 events {
@@ -90,11 +87,9 @@ http {
     default_type  application/octet-stream;
 
     sendfile        on;
-    #tcp_nopush     on;
 
     keepalive_timeout  65;
 
-    #gzip  on;
     types_hash_max_size 2048;
     server_names_hash_bucket_size  128;
 
