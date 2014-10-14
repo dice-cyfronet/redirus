@@ -1,15 +1,15 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'redirus/worker/version'
+require 'redirus/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'redirus-worker'
-  spec.version       = Redirus::Worker::VERSION
+  spec.name          = 'redirus'
+  spec.version       = Redirus::VERSION
   spec.authors       = ['Marek Kasztelnik']
   spec.email         = ['mkasztelnik@gmail.com']
-  spec.description   = %q{Redirus worker}
-  spec.summary       = %q{Worker is responsible for managing http/https/tcp/upd redirections}
+  spec.description   = %q{Redirus}
+  spec.summary       = %q{Redirus is responsible for managing http/https redirections}
   spec.homepage      = ''
   spec.license       = 'MIT'
 
@@ -22,9 +22,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
-  # spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'guard-rspec'
-  # spec.add_development_dependency 'libnotify'
   spec.add_development_dependency 'shoulda-matchers'
   spec.add_development_dependency 'rspec-sidekiq'
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    redirus-worker (0.0.1)
+    redirus (0.1.0)
       sidekiq
 
 GEM
@@ -84,6 +84,6 @@ DEPENDENCIES
   bundler
   guard-rspec
   rake
-  redirus-worker!
+  redirus!
   rspec-sidekiq
   shoulda-matchers

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Redirus::Worker::Proxy do
+describe Redirus::Proxy do
   let(:nginx_pid_file) { double('nginx pid file') }
   let(:config) {
     double('worker configuration',
@@ -9,7 +9,7 @@ describe Redirus::Worker::Proxy do
   }
 
   before do
-    Redirus::Worker.stub(:config).and_return(config)
+    Redirus.stub(:config).and_return(config)
     allow(File).to receive(:open).with('nginx_pid_file').and_yield(nginx_pid_file)
     allow(nginx_pid_file).to receive(:read).and_return('123')
   end

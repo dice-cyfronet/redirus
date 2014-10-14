@@ -11,7 +11,7 @@ describe Redirus::Worker::RmProxy do
   }
 
   before do
-    Redirus::Worker.stub(:config).and_return(config)
+    allow(Redirus).to receive(:config).and_return(config)
     allow(File).to receive(:open).with('nginx_pid_file').and_yield(nginx_pid_file)
     allow(nginx_pid_file).to receive(:read).and_return('123')
     allow(Process).to receive(:kill).with(:SIGHUP, 123)

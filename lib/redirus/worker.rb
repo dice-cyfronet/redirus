@@ -1,16 +1,22 @@
 require 'sidekiq'
 
-require_relative 'config'
-
 module Redirus
   module Worker
-    def self.config
-      @@config ||= Redirus::Config.new @config_path
-    end
-
-    def self.config_path
-      @@config_path = config_path
-      @@config = nil
-    end
+    autoload :AddProxy, 'redirus/worker/add_proxy'
+    autoload :RmProxy,  'redirus/worker/rm_proxy'
   end
+end
+
+Sidekiq.configure_server do |config|
+  config.redis = {
+    namespace: Redirus.config.namespace,
+    url: Redirus.config.redis_url
+  }
+end
+
+Sidekiq.configure_client do |c|
+  c.redis = {
+    namespace: Redirus.config.namespace,
+    url: Redirus.config.redis_url
+  }
 end

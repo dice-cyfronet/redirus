@@ -1,5 +1,3 @@
-require_relative 'proxy'
-
 module Redirus
   module Worker
     class RmProxy < Proxy

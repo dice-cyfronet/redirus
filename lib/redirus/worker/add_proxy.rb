@@ -1,5 +1,3 @@
-require_relative 'proxy'
-
 module Redirus
   module Worker
     class AddProxy < Proxy
@@ -8,7 +6,8 @@ module Redirus
         params = config_propertie(name, workers, type, props)
         File.open(config_file_path(name, type), 'w') do |file|
           param_regexp = '#{\w*}'
-          file.write config.config_template.gsub(/#{param_regexp}/) { |p| params[p[2..-2]] }
+          file.write config.config_template
+            .gsub(/#{param_regexp}/) { |p| params[p[2..-2]] }
         end
       end
 
@@ -17,7 +16,7 @@ module Redirus
       def config_propertie(name, workers, type, props)
         {
           'name' => name,
-          'listen' => https?(type)  ? config.https_template : config.http_template,
+          'listen' => https?(type) ? config.https_template : config.http_template,
           'upstream' => upstream_conf(name, workers, type),
           'upstream_name' => full_name(name, type),
           'properties' => location_properties(props)
@@ -44,7 +43,8 @@ module Redirus
       end
 
       def allowed?(prop)
-        config.allowed_properties.any? { |prop_regexp| /#{prop_regexp}/.match(prop) }
+        config.allowed_properties
+          .any? { |prop_regexp| /#{prop_regexp}/.match(prop) }
       end
     end
   end

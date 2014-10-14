@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'redirus'
+
+cli = Redirus::CLI.instance
+cli.parse
+cli.run

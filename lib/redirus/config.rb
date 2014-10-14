@@ -5,10 +5,8 @@ ROOT_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
 module Redirus
   class Config
     def initialize(path=nil)
-      config_path = path || default_config_path
-
-      if File.exists?(config_path)
-        @config = YAML.load_file(config_path)
+      if File.exists?(path)
+        @config = YAML.load_file(path)
       else
         @config = {}
       end
@@ -69,10 +67,6 @@ server {
     def nginx_prop(type, default=nil)
       value = @config['nginx'][type.to_s] if @config['nginx']
       value || default
-    end
-
-    def default_config_path
-      File.join(ROOT_PATH, 'config.yml')
     end
   end
 end
