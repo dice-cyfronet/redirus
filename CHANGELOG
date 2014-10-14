@@ -1,0 +1,5 @@
+v 0.1.0
+  - Add/Remove nginx redirection
+  - redirus executable
+  - redirus-client executable
+  - Possibility to add redirection properties

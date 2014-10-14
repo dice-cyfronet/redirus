@@ -1,7 +1,8 @@
-# Redirus worker [![build status](https://secure.travis-ci.org/dice-cyfronet/redirus-worker.png)](https://travis-ci.org/dice-cyfronet/redirus-worker) [![Code Climate](https://codeclimate.com/github/dice-cyfronet/redirus-worker.png)](https://codeclimate.com/github/dice-cyfronet/redirus-worker) [![Dependency Status](https://gemnasium.com/dice-cyfronet/redirus-worker.png)](https://gemnasium.com/dice-cyfronet/redirus-worker) [![Coverage Status](https://coveralls.io/repos/dice-cyfronet/redirus-worker/badge.png?branch=master)](https://coveralls.io/r/dice-cyfronet/redirus-worker)
+# Redirus [![build status](https://secure.travis-ci.org/dice-cyfronet/redirus.png)](https://travis-ci.org/dice-cyfronet/redirus) [![Code Climate](https://codeclimate.com/github/dice-cyfronet/redirus.png)](https://codeclimate.com/github/dice-cyfronet/redirus) [![Dependency Status](https://gemnasium.com/dice-cyfronet/redirus.png)](https://gemnasium.com/dice-cyfronet/redirus) [![Coverage Status](https://coveralls.io/repos/dice-cyfronet/redirus/badge.png?branch=master)](https://coveralls.io/r/dice-cyfronet/redirus)
 
-The redirus worker is responsible for consuming create/delete subdomain redirections,
-generating the appropriate nginx configurations and reloading nginx.
+The redirus is responsible for creating/deleting subdomain redirections.
+It is done by generating the appropriate nginx configurations and
+reloading nginx server.
 
 ## Requirements
 
@@ -43,12 +44,6 @@ cd ruby-2.1.2
 ./configure --disable-install-rdoc
 make
 sudo make install
-```
-
-Install the Bundler Gem:
-
-```
-sudo gem install bundler --no-ri --no-rdoc
 ```
 
 ## Nginx installation
@@ -133,18 +128,11 @@ chmod 400 host.key host.pem
 ## Redirus worker installation
 
 ```bash
-# Get code
-git clone https://github.com/dice-cyfronet/redirus-worker.git
+# install redirus
+gem install redirus
 
-# Enter code dir
-cd redirus-worker
-
-# Install dependencies
-gem install bundler
-bundle install --deployment --without development test
-
-# Copy configuration
-cp config.yml.example config.yml
+# Download sample redirus configuration
+curl -L --progress https://raw.githubusercontent.com/dice-cyfronet/redirus/master/config.yml.example > config.yml
 
 # Customise redis configuration and nginx config files locations
 edit config.yml
@@ -236,87 +224,53 @@ server {
 }
 ```
 
-## Run
+## Run redirus
 
 ```bash
-/path/to/nginx/sbin/nginx
-bundle exec ./bin/run
+redirus -c redirus_configuration_path
 ```
+
+When no configuration path is given than redirus tries to load configuration from `config.yml` located in current dir.
+
+See `redirus -h` for details.
+
+## Run redirus client
+
+```
+redirus-client -c config.yml -a add -t http my_redirection 10.100.0.1:80,10.100.0.2:80
+redirus-client -c config.yml -a rm -t http my_redirection
+```
+
+See `redirus-client -h` for details.
+
 ## Starting using upstart
 
-The first step is to modify upstart in order to allow normal users to invoke it:
-
-Replace `/etc/dbus-1/system.d/Upstart.conf` with yr content presented below
-to allow any user to invoke all upstart methods:
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE busconfig PUBLIC
-  "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
-  "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
-
-<busconfig>
-  <!-- Only the root user can own the Upstart name -->
-  <policy user="root">
-    <allow own="com.ubuntu.Upstart" />
-  </policy>
-
-  <!-- Allow any user to invoke all of the methods on Upstart, its jobs
-       or their instances, and to get and set properties - since Upstart
-       isolates commands by user. -->
-  <policy context="default">
-    <allow send_destination="com.ubuntu.Upstart"
-       send_interface="org.freedesktop.DBus.Introspectable" />
-    <allow send_destination="com.ubuntu.Upstart"
-       send_interface="org.freedesktop.DBus.Properties" />
-    <allow send_destination="com.ubuntu.Upstart"
-       send_interface="com.ubuntu.Upstart0_6" />
-    <allow send_destination="com.ubuntu.Upstart"
-       send_interface="com.ubuntu.Upstart0_6.Job" />
-    <allow send_destination="com.ubuntu.Upstart"
-       send_interface="com.ubuntu.Upstart0_6.Instance" />
-  </policy>
-</busconfig>
-```
-
-Add the following to `${HOME}/.bash_profile` (where `${HOME}` is the home directory of the user who will run `upstart`):
-
-```
-if [ ! -f /var/run/user/$(id -u)/upstart/sessions/*.session ]
-then
-    /sbin/init --user --confdir ${HOME}/.init &
-fi
-
-if [ -f /var/run/user/$(id -u)/upstart/sessions/*.session ]
-then
-   export $(cat /var/run/user/$(id -u)/upstart/sessions/*.session)
-fi
-```
+**NOTE**: presented configuration was tested on Ubuntu 14.04
 
 Copy upstart configuration files:
 
 ```
 cd redirus-worker-directory
-mkdir ${HOME}/.init
+mkdir -p ${HOME}/.config/upstart
+cd ${HOME}/.config/upstart
 
-cp lib/support/upstart/redirus.conf ${HOME}/.init
-cp lib/support/upstart/redirus-worker.conf ${HOME}/.init
-cp lib/support/upstart/redirus-worker-1.conf ${HOME}/.init
-cp lib/support/upstart/redirus-worker-nginx.conf ${HOME}/.init
+curl -L --progress https://raw.githubusercontent.com/dice-cyfronet/redirus/master/support/upstart/redirus.conf > redirus.conf
+curl -L --progress https://raw.githubusercontent.com/dice-cyfronet/redirus/master/support/upstart/redirus-sidekiq.conf > redirus-sidekiq.conf
+curl -L --progress https://raw.githubusercontent.com/dice-cyfronet/redirus/master/support/upstart/redirus-nginx.conf > redirus-nginx.conf
 
 # Specify user name, path under which the redirus worker is installed and
 # the location of the nginx configuration directory to be created:
-editor ${HOME}/.init/redirus.conf
+editor ${HOME}/.config/upstart/redirus.conf
 
 # Similar as above, plus if you are using ruby version manager - uncomment and
 # customize the appropriate section for rbenv or rvm
-editor ${HOME}/.init/redirus-worker-1.conf
+editor ${HOME}/.config/upstart/redirus-sidekiq-1.conf
 
 # Update path to nginx
-editor ${HOME}/.init/redirus-worker-nginx.conf
+editor ${HOME}/.config/upstart/redirus-nginx.conf
 ```
-After loggin off and back on you should be able to start/stop/restart redirus
-using the following commands:
+Now you should be able to start/stop/restart redirus using the
+following commands:
 
 ```
 initctl start redirus
@@ -324,7 +278,7 @@ initctl stop redirus
 initctl restart redirus
 ```
 
-## Generating Add/Remove redirection requests
+## Generating Add/Remove redirection requests from ruby code
 
 ```ruby
 require 'rubygems'
