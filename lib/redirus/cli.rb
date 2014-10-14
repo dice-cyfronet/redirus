@@ -86,6 +86,7 @@ module Redirus
       {
         config_path: 'config.yml',
         type: :http,
+        action: :add,
         queue: Redirus.config.queues.first
       }
     end
