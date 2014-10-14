@@ -25,8 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'shoulda-matchers'
   spec.add_development_dependency 'rspec-sidekiq'
-
-  if ENV['TRAVIS']
-    spec.add_development_dependency 'coveralls'
-  end
+  spec.add_development_dependency 'coveralls'
 end
