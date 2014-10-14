@@ -2,6 +2,13 @@ require 'optparse'
 require 'singleton'
 require 'sidekiq/cli'
 
+Sidekiq.configure_server do |config|
+  config.redis = {
+    namespace: Redirus.config.namespace,
+    url: Redirus.config.redis_url
+  }
+end
+
 module Redirus
   class ServerCLI
     include Singleton
