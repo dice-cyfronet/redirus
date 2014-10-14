@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['mkasztelnik@gmail.com']
   spec.description   = %q{Redirus}
   spec.summary       = %q{Redirus is responsible for managing http/https redirections}
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/dice-cyfronet/redirus'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
