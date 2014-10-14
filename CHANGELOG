@@ -1,3 +1,7 @@
+v 0.1.1
+  - Sidekiq redis configuration only in clients
+  - Default action in redirus-client set to add
+
 v 0.1.0
   - Add/Remove nginx redirection
   - redirus executable
