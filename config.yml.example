@@ -14,6 +14,7 @@ nginx:
     listen *:443 ssl;
     ssl_certificate     /path/to/cert/dir/server.crt;
     ssl_certificate_key /path/to/cert/dir/server.key;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
   config_template: |
     #{upstream}
     server {
