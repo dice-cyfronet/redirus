@@ -1,3 +1,6 @@
+v 0.1.2
+  - ssl_protocols set to TLSv1 TLSv1.1 TLSv1.2 in default nginx configurations
+
 v 0.1.1
   - Sidekiq redis configuration only in clients
   - Default action in redirus-client set to add

@@ -40,6 +40,7 @@ module Redirus
       nginx_prop :https_template, %q[listen *:443 ssl;
 ssl_certificate     /usr/share/ssl/certs/localhost/host.cert;
 ssl_certificate_key /usr/share/ssl/certs/localhost/host.key;
+ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
 ]
     end
 
