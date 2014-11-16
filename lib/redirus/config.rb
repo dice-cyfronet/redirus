@@ -33,30 +33,11 @@ module Redirus
     end
 
     def http_template
-      nginx_prop :http_template, 'listen *:80;'
+      nginx_prop :http_template, 'http.conf.erb'
     end
 
     def https_template
-      nginx_prop :https_template, %q[listen *:443 ssl;
-ssl_certificate     /usr/share/ssl/certs/localhost/host.cert;
-ssl_certificate_key /usr/share/ssl/certs/localhost/host.key;
-ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-]
-    end
-
-    def config_template
-      nginx_prop :config_template, %q[#{upstream}
-
-server {
-  #{listen}
-
-  server_name #{name}.localhost;
-  server_tokens off;
-
-  location / {
-    proxy_pass http://#{upstream_name};
-  }
-}]
+      nginx_prop :https_template, 'https.conf.erb'
     end
 
     def allowed_properties

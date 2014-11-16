@@ -8,26 +8,8 @@ namespace: redirus
 nginx:
   configs_path: /path/to/dir/with/nginx/configs/
   pid: /path/to/nginx.pid
-  http_template: |
-    listen *:80;
-  https_template: |
-    listen *:443 ssl;
-    ssl_certificate     /path/to/cert/dir/server.crt;
-    ssl_certificate_key /path/to/cert/dir/server.key;
-    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-  config_template: |
-    #{upstream}
-    server {
-      #{listen}
-      server_name #{name}.my-domain.pl;
-      server_tokens off;
-      proxy_set_header X-Server-Address $scheme://#{name}.my-domain.pl;
-      proxy_set_header Host $http_host;
-      location / {
-        proxy_pass http://#{upstream_name};
-        #{properties}
-      }
-    }
+  http_template: /path/to/http/nginx/config/template
+  https_template: /path/to/https/nginx/config/template
   allowed_properties:
     - proxy_sent_timeout \d
     - proxy_read_timeout \d

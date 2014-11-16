@@ -1,11 +1,12 @@
 require 'sidekiq'
 
 module Redirus
-  autoload :Version,   'redirus/version'
-  autoload :Config,    'redirus/config'
-  autoload :Proxy,     'redirus/proxy'
-  autoload :CLI,       'redirus/cli'
-  autoload :ServerCLI, 'redirus/server_cli'
+  autoload :Version,        'redirus/version'
+  autoload :Config,         'redirus/config'
+  autoload :Proxy,          'redirus/proxy'
+  autoload :Utils,          'redirus/utils'
+  autoload :CLI,            'redirus/cli'
+  autoload :ServerCLI,      'redirus/server_cli'
 
   def self.config
     @@config ||= Redirus::Config.new(config_path)

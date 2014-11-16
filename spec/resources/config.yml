@@ -6,24 +6,8 @@ namespace: configfile-redirus
 nginx:
   pid: configfile-nginx.pid
   configs_path: configfile-sites-enabled
-  http_template: 'listen *:8000;'
-  https_template: |
-    listen *:8443 ssl;
-    ssl_certificate     /usr/share/ssl/certs/localhost/host.cert;
-    ssl_certificate_key /usr/share/ssl/certs/localhost/host.key;
-    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-  config_template: |
-    ## configfile
-    #{upstream}
-    server {
-      #{listen}
-      server_name #{name}.localhost;
-      server_tokens off;
-      location / {
-        proxy_pass http://#{upstream_name};
-        #{properties}
-      }
-    }
+  http_template: /path/to/http/tmpl
+  https_template: /path/to/https/tmpl
   allowed_properties:
     - proxy_send_timeout \d
     - proxy_read_timeout \d

@@ -1,3 +1,6 @@
+v 0.2.0
+  - erb used to create nginx http and https config templates
+
 v 0.1.2
   - ssl_protocols set to TLSv1 TLSv1.1 TLSv1.2 in default nginx configurations
 

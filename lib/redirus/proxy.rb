@@ -26,20 +26,10 @@ module Redirus
       #by default do nothing
     end
 
-    def full_name(name, type)
-      "#{name}_#{type}"
-    end
-
-    def config_file_path(name, type)
-      File.join(config.configs_path, full_name(name, type))
-    end
-
-    def config
-      @config ||= Redirus.config
-    end
+    private
 
     def restart_nginx
-      File.open(config.nginx_pid_file) do |file|
+      File.open(Redirus.config.nginx_pid_file) do |file|
         pid = file.read.to_i
         Process.kill :SIGHUP, pid
       end
