@@ -1,0 +1,16 @@
+queues:
+<% for queue in @options[:queues] -%>
+  - <%= queue %>
+<% end -%>
+
+redis_url: <%= @options[:redis] %>
+namespace: redirus
+
+nginx:
+  configs_path: <%= @options[:configs_dir] %>
+  pid: <%= @options[:pid] %>
+  http_template: <%= @options[:http_template] %>
+  https_template: <%= @options[:https_template] %>
+  allowed_properties:
+    - proxy_sent_timeout \d
+    - proxy_read_timeout \d

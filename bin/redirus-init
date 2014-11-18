@@ -2,6 +2,6 @@
 
 require 'redirus'
 
-cli = Redirus::Cli::Server.instance
+cli = Redirus::Cli::Init.instance
 cli.parse
 cli.run

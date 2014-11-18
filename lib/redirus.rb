@@ -5,7 +5,7 @@ module Redirus
   autoload :Config,         'redirus/config'
   autoload :Proxy,          'redirus/proxy'
   autoload :Utils,          'redirus/utils'
-  autoload :CLI,            'redirus/cli'
+  autoload :Cli,            'redirus/cli'
   autoload :ServerCLI,      'redirus/server_cli'
 
   def self.config
@@ -19,6 +19,10 @@ module Redirus
   def self.config_path=(path)
     @@config_path = path
     @@config = nil
+  end
+
+  def self.root
+    File.dirname __dir__
   end
 end
 
