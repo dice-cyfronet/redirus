@@ -131,11 +131,13 @@ chmod 400 host.key host.pem
 # install redirus
 gem install redirus
 
-# Download sample redirus configuration
-curl -L --progress https://raw.githubusercontent.com/dice-cyfronet/redirus/master/config.yml.example > config.yml
+# Generate inital redirus and nginx configuration
+redirus-init
 
 # Customise redis configuration and nginx config files locations
 edit config.yml
+edit http.erb.conf
+edit https.erb.conf
 ```
 
 ## Example config.yml
@@ -151,26 +153,8 @@ namespace: redirus
 nginx:
   configs_path: /path/to/generated/nginx/configurations/
   pid: /nginx/installation/path/nginx.pid
-  http_template: |
-    listen *:80;
-  https_template: |
-    listen *:443 ssl;
-    ssl_certificate     /path/to/cert/dir/server.crt;
-    ssl_certificate_key /path/to/cert/dir/server.key;
-    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
-  config_template: |
-    #{upstream}
-    server {
-      #{listen}
-      server_name #{name}.my-domain.pl;
-      server_tokens off;
-      proxy_set_header X-Server-Address $scheme://#{name}.my-domain.pl;
-      proxy_set_header Host $http_host;
-      location / {
-        proxy_pass http://#{upstream_name};
-        #{properties}
-      }
-    }
+  http_template: /path/to/http/nginx/config/template
+  https_template: /path/to/https/nginx/config/template
   allowed_properties:
     - proxy_sent_timeout \d
     - proxy_read_timeout \d
@@ -182,21 +166,71 @@ specific for concrete redirection will be created. Value of this path **need** t
 be the same as in nginx configuration file.
 + `/nginx/installation/path/nginx.pid` is a file containing nginx pid. To this pid
 `SIGHUP` signal will be sent, which will triggers nginx configuration reload.
-+ `/path/to/cert/dir/server.crt` path to ssl certificate used in https redirections.
-This certificate need to have `*` in CN field.
-+ `/path/to/cert/dir/server.key` path to ssl certificate key file.
-
-By using `http_template`, `https_template`, `config_template` and
-`allowed_properties` you can customize how nginx configuration looks like for each
-subdomain.
-
-+ `http_template` is used when an http redirection is created
-+ `https_template` is used when an https redirection is created
-+ `config_template` is used for http and https redirections.
-Inside this template, the `listen` variable section is specific to http or https
-redirections.
-+ `allowed_properties` is used to define allowed parameters which can be
++ `allowed_properties` is used to define allowed location parameters which can be
 passed in the generated configuration. Regular expressions can be used here.
+
+## Example `http.erb.conf` and `https.erb.conf`
+
+`http.erb.conf` used to create `http` redirections:
+
+```
+upstream <%= @name %>_http {
+<% if @options[:load_balancing] == :ip_hash -%>
+  ip_hash;
+<% end -%>
+<% for worker in @workers -%>
+  server <%= worker %>;
+<% end -%>
+}
+
+server {
+  listen 127.0.0.1:80;
+  server_name <%= @name %>.localhost;
+  location / {
+    proxy_pass http://<%= @name %>_http;
+<% for property in @location_properties -%>
+    <%= property %>;
+<% end -%>
+  }
+}
+```
+
+`https.erb.conf` used to create `https` redirections:
+
+```
+upstream <%= @name %>_https {
+<% for worker in @workers -%>
+  server <%= worker %>;
+<% end -%>
+}
+
+server {
+  listen 127.0.0.1:443 ssl;
+  server_name <%= @name %>.localhost;
+
+  ssl_certificate     /path/to/cert/dir/server.crt;
+  ssl_certificate_key /path/to/cert/dir/server.key;
+  ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+
+  location / {
+    proxy_pass http://<%= @name %>_https;
+<% for property in @location_properties -%>
+    <%= property %>;
+<% end -%>
+  }
+}
+```
+
+In presented templates following dynamic elements are used:
+
+  - `@name` - redirection name used as a url prefix
+  - `@workers` - list of upstream addresses in following format `ip:port`
+  - `@location_properties` - list of location properties
+    (possible properties can be limitted using `allowed_properties` section
+    in `config.yml` file)
+  - `@options` - other properties passed by the redirus client,
+    can be used e.g. to allow sticky session configuration like presented in
+    `http.erb.conf`
 
 For example - when a redirection with the following parameters is requested:
 
@@ -204,7 +238,12 @@ For example - when a redirection with the following parameters is requested:
 Sidekiq::Client.push(
   'queue' => 'cyfronet',
   'class' => Redirus::Worker::AddProxy,
-  'args' => ['subdomain', ['127.0.0.1:80'], :http, ["proxy_send_timeout 6000"]])
+  'args' => [
+              'subdomain', ['127.0.0.1:80'], :http,
+              ["proxy_send_timeout 6000"],
+              { load_balancing: :ip_hash }
+            ]
+  )
 ```
 
 ...then the following `/nginx/sites-enabled/subdomain_http` subdomain config file
@@ -212,6 +251,7 @@ will be created:
 
 ```
 upstream subdomain_http {
+  ip_hash;
   server 127.0.0.1:80;
 }
 server {
@@ -224,6 +264,20 @@ server {
   }
 }
 ```
+
+## Redirus generator
+
+By running following command:
+
+```
+redirus-init
+```
+
+set of `redirus` and `nginx` configuration files will be created.
+You can customize generated files by providing additional `redirus-init`
+parameters.
+
+See `redirus-init -h` for details.
 
 ## Run redirus
 
@@ -300,7 +354,12 @@ end
 Sidekiq::Client.push(
   'queue' => Redirus::Worker.config.queues.first,
   'class' => Redirus::Worker::AddProxy,
-  'args' => ['subdomain', ['127.0.0.1'], :http, ["proxy_send_timeout 6000"]])
+  'args' => [
+              'subdomain', ['127.0.0.1'], :http,
+              ["proxy_send_timeout 6000"],
+              { load_balancing: :ip_hash }
+            ]
+)
 
 # remove redirection
 Sidekiq::Client.push(
