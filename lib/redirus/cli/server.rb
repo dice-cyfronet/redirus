@@ -2,13 +2,6 @@ require 'optparse'
 require 'singleton'
 require 'sidekiq/cli'
 
-Sidekiq.configure_server do |config|
-  config.redis = {
-    namespace: Redirus.config.namespace,
-    url: Redirus.config.redis_url
-  }
-end
-
 module Redirus
   module Cli
     class Server
@@ -22,6 +15,9 @@ module Redirus
       end
 
       def run
+        Redirus.config_path = options[:config_path]
+        init_sidekiq
+
         sidekiq_cli = Sidekiq::CLI.instance
         args = queues + [
           '-c', '1',
@@ -34,6 +30,15 @@ module Redirus
       end
 
       private
+
+      def init_sidekiq
+        Sidekiq.configure_server do |config|
+          config.redis = {
+            namespace: Redirus.config.namespace,
+            url: Redirus.config.redis_url
+          }
+        end
+      end
 
       def queues
         Redirus.config.queues.inject([]) do |arr, q|

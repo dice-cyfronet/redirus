@@ -1,13 +1,6 @@
 require 'optparse'
 require 'singleton'
 
-Sidekiq.configure_client do |c|
-  c.redis = {
-    namespace: Redirus.config.namespace,
-    url: Redirus.config.redis_url
-  }
-end
-
 module Redirus
   module Cli
     class Client
@@ -21,10 +14,22 @@ module Redirus
       end
 
       def run
+        Redirus.config_path = options[:config_path]
+        init_sidekiq
+
         add? ? add : rm
       end
 
       private
+
+      def init_sidekiq
+        Sidekiq.configure_client do |c|
+          c.redis = {
+            namespace: Redirus.config.namespace,
+            url: Redirus.config.redis_url
+          }
+        end
+      end
 
       def init_options(args)
         opts = parse_options(args)
