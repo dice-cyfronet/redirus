@@ -265,6 +265,11 @@ server {
 }
 ```
 
+**NOTE:** It is redirus administrator role to prepare `http` and `https`
+templates in such a way that generated configuration will be valid.
+If at least one nginx configuration will be invalid then nginx will fail to
+reboot.
+
 ## Redirus generator
 
 By running following command:
