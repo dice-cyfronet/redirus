@@ -60,6 +60,20 @@ module Redirus
             opts[:type] = arg
           end
 
+          o.on('-l',
+               '--location-property LIST',
+               Array,
+               'List of location properties (e.g. prop1,prop2)') do |arg|
+            opts[:location_properties] = arg
+          end
+
+          o.on('-o',
+               '--options MAP',
+               Array,
+               'Option map (e.g. key1:value1,key2:value2)') do |arg|
+            opts[:options] = to_hsh(arg)
+          end
+
           o.on_tail('-h', '--help', 'Show this message') do
             puts o
             exit
@@ -84,11 +98,23 @@ module Redirus
         opts
       end
 
+      def to_hsh(array)
+        array.inject({}) do |hsh, item|
+          kv = item.split(':')
+          if kv.size >= 2
+            hsh[kv[0]] = kv[1]
+          end
+          hsh
+        end
+      end
+
       def defaults
         {
           config_path: 'config.yml',
           type: :http,
           action: :add,
+          location_properties: [],
+          options: {},
           queue: Redirus.config.queues.first
         }
       end
@@ -133,7 +159,10 @@ module Redirus
         Sidekiq::Client.push(
           'queue' => options[:queue],
           'class' => Redirus::Worker::AddProxy,
-          'args' => [options[:name], options[:upstreams], options[:type]])
+          'args' => [options[:name],
+                     options[:upstreams],
+                     options[:type], options[:location_properties],
+                     options[:options]])
       end
 
       def rm
