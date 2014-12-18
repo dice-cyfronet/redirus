@@ -1,3 +1,6 @@
+v 0.2.1
+  - set minimal dependency versions in gemspec
+
 v 0.2.0
   - erb used to create nginx http and https config templates
   - redirus-init command added to bootstrap redirus configuration
