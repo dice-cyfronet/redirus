@@ -5,19 +5,12 @@ module Redirus
     include Sidekiq::Worker
 
     def perform(*params)
-      begin
-        perform_action(*params)
-        restart_nginx
-      rescue Errno::EACCES => e
-        $stderr << "Error: Cannot write to config files - continuing\n"
-        $stderr << "#{e}\n"
-      rescue Errno::ENOENT => e
-        $stderr << "Error: Trying to remove non existing config files - continuing\n"
-        $stderr << "#{e}\n"
-      rescue Errno::ESRCH => e
-        $stderr << "Warning: Nginx is dead - continuing\n"
-        $stderr << "#{e}\n"
-      end
+      perform_action(*params)
+      restart_nginx
+    rescue Errno::EACCES => e
+      error('Error: Cannot write to config files - continuing', e)
+    rescue Errno::ENOENT => e
+      error('Error: Remove non existing config files - continuing', e)
     end
 
     protected
@@ -33,6 +26,14 @@ module Redirus
         pid = file.read.to_i
         Process.kill :SIGHUP, pid
       end
+    rescue Errno::ENOENT => e
+      error('Error: Nginx pid file does not exist - continuing', e)
+    rescue Errno::ESRCH => e
+      error('Warning: Nginx is dead - continuing', e)
+    end
+
+    def error(msg, e)
+      $stderr << "#{msg}\n  - #{e}\n"
     end
   end
 end
