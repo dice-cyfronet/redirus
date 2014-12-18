@@ -3,6 +3,8 @@ v 0.2.0
   - redirus-init command added to bootstrap redirus configuration
   - possiblity to pass location parameters and options using redirus-client
   - better error messages
+  - fix problem with showing redirus version using redirus executables
+  - help for redirus executable
 
 v 0.1.2
   - ssl_protocols set to TLSv1 TLSv1.1 TLSv1.2 in default nginx configurations

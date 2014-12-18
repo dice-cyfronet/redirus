@@ -76,7 +76,12 @@ module Redirus
           end
 
           o.on_tail('-h', '--help', 'Show this message') do
-            puts opts
+            puts o
+            exit
+          end
+
+          o.on_tail('-v', '--version', 'Show version') do
+            puts "Redirus #{Redirus::VERSION}"
             exit
           end
         end.parse!(args)

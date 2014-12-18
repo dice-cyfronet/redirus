@@ -85,7 +85,7 @@ module Redirus
           end
 
           o.on_tail('-v', '--version', 'Show version') do
-            puts "Redirus #{Redirus.VERSION}"
+            puts "Redirus #{Redirus::VERSION}"
             exit
           end
         end

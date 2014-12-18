@@ -76,8 +76,8 @@ module Redirus
           end
 
           o.on('--configurations DIR',
-               'Directory where nginx configurations will be generated '\
-               '(default "configurations" dir in current directory') do |arg|
+               'Directory where nginx configs will be generated '\
+               '(default "configurations" in current directory)') do |arg|
             opts[:configs_dir] = arg
           end
 
@@ -102,7 +102,7 @@ module Redirus
           end
 
           o.on_tail('-v', '--version', 'Show version') do
-            puts "Redirus #{Redirus.VERSION}"
+            puts "Redirus #{Redirus::VERSION}"
             exit
           end
         end

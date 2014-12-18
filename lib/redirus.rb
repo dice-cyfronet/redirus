@@ -1,7 +1,7 @@
 require 'sidekiq'
+require 'redirus/version'
 
 module Redirus
-  autoload :Version,        'redirus/version'
   autoload :Config,         'redirus/config'
   autoload :Proxy,          'redirus/proxy'
   autoload :Utils,          'redirus/utils'
