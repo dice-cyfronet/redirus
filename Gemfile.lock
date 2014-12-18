@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    redirus (0.2.0)
+    redirus (0.3.0.pre)
       sidekiq
 
 GEM
