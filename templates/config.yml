@@ -12,5 +12,5 @@ nginx:
   http_template: <%= @options[:http_template] %>
   https_template: <%= @options[:https_template] %>
   allowed_properties:
-    - proxy_sent_timeout \d
+    - proxy_send_timeout \d
     - proxy_read_timeout \d
