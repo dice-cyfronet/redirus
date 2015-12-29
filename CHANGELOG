@@ -1,5 +1,6 @@
 v 0.3.0
-  - fixed misspelled proxy_send_timeout nginx directive in config.yml template
+  - fixe misspelled proxy_send_timeout nginx directive in config.yml template
+  - change default https configuration from https->http into https->https
 
 v 0.2.1
   - set minimal dependency versions in gemspec

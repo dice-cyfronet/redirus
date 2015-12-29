@@ -69,7 +69,7 @@ describe Redirus::Worker::AddProxy do
 
     it 'sets https upstream name in proxy pass section' do
       expect(proxy_file).to have_received(:write).
-        with(/.*proxy_pass http:\/\/subdomain_https;.*/)
+        with(/.*proxy_pass https:\/\/subdomain_https;.*/)
     end
 
     it 'has https upstream section with upstream server' do
