@@ -1,6 +1,7 @@
 require 'optparse'
 require 'singleton'
 require 'sidekiq/cli'
+require 'redirus'
 
 module Redirus
   module Cli
@@ -48,10 +49,11 @@ module Redirus
       end
 
       def runner_path
-        module_path = File.expand_path(File.join(
-                        File.dirname(__FILE__), '..', '..'))
-
-        File.join(module_path, 'redirus.rb')
+        # module_path = File.expand_path(File.join(
+        #                 File.dirname(__FILE__), '..', '..'))
+        #
+        # File.join(module_path, 'redirus')
+        'redirus'
       end
 
       def init_options(args)
