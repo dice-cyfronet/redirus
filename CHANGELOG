@@ -1,6 +1,10 @@
+v 0.3.1
+  - fix problem with loading sidekiq by redirus cli server
+
 v 0.3.0
-  - fixe misspelled proxy_send_timeout nginx directive in config.yml template
+  - fix misspelled proxy_send_timeout nginx directive in config.yml template
   - change default https configuration from https->http into https->https
+  - update to sidekiq 4.2
 
 v 0.2.1
   - set minimal dependency versions in gemspec
